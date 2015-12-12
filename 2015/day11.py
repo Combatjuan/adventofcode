@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import ctypes
 import re
 
 
@@ -20,28 +21,30 @@ def matches(password):
 	return has_oil.search(password) is None and dbl_dbls.search(password) is not None and tri_increments(password)
 
 
-password = 'hxbxwxba'
+#password = 'hxbxwxba'
+password = 'hxbxxyzz'
 while True:
-	# I think this may actually be the fastest implementation even though it's ugly...
 	print password
-	incs = 0
-	password = password[:7] + inc_char(password[7])
-	if password[6] == 'z':
-		incs += 1
-		if password[5] == 'z':
-			incs += 1
-			if password[4] == 'z':
-				incs += 1
-				if password[3] == 'z':
-					incs += 1
-					if password[2] == 'z':
-						incs += 1
-						if password[1] == 'z':
-							incs += 1
-							if password[0] == 'z':
-								incs += 1
-	password = password[:8-incs] + ''.join([inc_char(c) for c in password[incs:]])
-
+	# I think this may actually be the fastest implementation even though it's ugly...
+	mut = ctypes.create_string_buffer(password)
+	mut[7] = inc_char(mut[7])
+	if mut[7] == 'a':
+		mut[6] = inc_char(mut[6])
+		if mut[6] == 'a':
+			mut[5] = inc_char(mut[5])
+			if mut[5] == 'a':
+				mut[4] = inc_char(mut[4])
+				if mut[4] == 'a':
+					mut[3] = inc_char(mut[3])
+					if mut[3] == 'a':
+						mut[2] = inc_char(mut[2])
+						if mut[2] == 'a':
+							mut[1] = inc_char(mut[1])
+							if mut[1] == 'a':
+								mut[0] = inc_char(mut[0])
+								if mut[0] == 'a':
+									mut[7] = inc_char(mut[7])
+	password = mut.value
 	if matches(password):
 		break
 
