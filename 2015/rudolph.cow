@@ -1,0 +1,12 @@
+# Attribution: http://www.heartnsoul.com/ascii_art/deer.txt by ejm97
+$the_cow = <<"EOC";
+      $thoughts      { }         
+       $thoughts    ,^^}         
+         O-'0  )         
+          '~~;;"     _    
+             ;(______)\\   
+             )         )  
+            ( )~~~---:|   
+           //         \\\\_ 
+           vv          \\ \\
+EOC
