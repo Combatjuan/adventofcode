@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace dayX
 {
@@ -36,30 +35,13 @@ namespace dayX
 
 		int IComparable<Train>.CompareTo(Train that)
 		{
-			if (this.row < that.row)
-			{
-				Console.WriteLine("{0} < {1} By row", this.number, that.number);
-				return -1;
-			}
-			else if (this.row > that.row)
-			{
-				Console.WriteLine("{0} > {1} By row", this.number, that.number);
-				return 1;
-			}
+			if (this.row < that.row) return -1;
+			else if (this.row > that.row) return 1;
 			else
 			{
-				if (this.column < that.column)
-				{
-					Console.WriteLine("{0} < {1} By col", this.number, that.number);
-					return -1;
-				}
-				else if (this.column > that.column)
-				{
-					Console.WriteLine("{0} > {1} By col", this.number, that.number);
-					return 1;
-				}
+				if (this.column < that.column) return -1;
+				else if (this.column > that.column) return 1;
 			}
-			Console.WriteLine("{0} = {1}", this.number, that.number);
 			return 0;
 		}
 
@@ -107,25 +89,26 @@ namespace dayX
 			else throw new InvalidOperationException("Unexpected decision.");
 		}
 
-		static void PrintTracks(List<char[]> tracks, List<Train> trains)
-		{
-			Console.BackgroundColor = ConsoleColor.White;
-			Console.ForegroundColor = ConsoleColor.Red;
-			Console.Clear();
-			foreach (char[] track in tracks)
-			{
-				Console.WriteLine(track);
-			}
-			Console.ForegroundColor = ConsoleColor.DarkBlue;
-			foreach (Train train in trains)
-			{
-				Console.SetCursorPosition(train.column, train.row);
-				Console.Write(CharForFacing(train.facing));
-			}
-			Console.SetCursorPosition(0, 0);
-		}
+		//static void PrintTracks(List<char[]> tracks, List<Train> trains)
+		//{
+		//	Console.BackgroundColor = ConsoleColor.Black;
+		//	Console.ForegroundColor = ConsoleColor.White;
+		//	Console.Clear();
+		//	foreach (char[] track in tracks)
+		//	{
+		//		Console.WriteLine(track);
+		//	}
+		//	foreach (Train train in trains)
+		//	{
+		//		if (train.number == 5 || train.number == 10) Console.ForegroundColor = ConsoleColor.Red;
+		//		else Console.ForegroundColor = ConsoleColor.Blue;
+		//		Console.SetCursorPosition(train.column, train.row);
+		//		Console.Write(CharForFacing(train.facing));
+		//	}
+		//	Console.SetCursorPosition(0, 0);
+		//}
 
-		const int FRAME_SLEEP_MS = 5;
+		//const int FRAME_SLEEP_MS = 5;
 
 		static void Main(string[] args)
 		{
@@ -163,7 +146,7 @@ namespace dayX
 					++c;
 				}
 				tracks.Add(track_row);
-				Console.WriteLine(line);
+				//Console.WriteLine(line);
 				++r;
 			}
 
@@ -175,13 +158,6 @@ namespace dayX
 			while (safe)
 			{
 				trains.Sort();
-
-				int counter = 0;
-				foreach (Train train in trains)
-				{
-					Console.WriteLine("{0} Train {1} at ({2}, {3})", counter++, train.number, train.column, train.row);
-				}
-				Console.WriteLine();
 
 				foreach (Train train in trains)
 				{
@@ -234,12 +210,14 @@ namespace dayX
 				}
 
 				//PrintTracks(tracks, trains);
-				System.Threading.Thread.Sleep(FRAME_SLEEP_MS);
+				//System.Threading.Thread.Sleep(FRAME_SLEEP_MS);
 			}
+			//Console.SetCursorPosition(collision_x, collision_y);
+			//Console.ForegroundColor = ConsoleColor.Red;
+			//Console.Write('X');
+			//Console.SetCursorPosition(0, 151);
 			//Console.SetCursorPosition(0, tracks.Count + 1);
-			Console.WriteLine("Collision at {0},{1}", collision_x, collision_y);
-			Console.SetCursorPosition(collision_x, collision_y);
-			Console.Write('X');
+			Console.WriteLine("Oh no! Collision at {0},{1}", collision_x, collision_y);
 		}
 	}
 }
