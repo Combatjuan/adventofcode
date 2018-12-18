@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace dayX
+namespace day13
 {
 	enum Decision
 	{
@@ -152,11 +152,12 @@ namespace dayX
 
 			int collision_x = -1;
 			int collision_y = -1;
-			bool safe = true;
-			HashSet<(int, int)> locations = new HashSet<(int, int)>();
+			Dictionary<(int, int), int> locations = new Dictionary<(int, int), int>();
+			List<(int, int)> crashes;
 			// Explicit break when we collide
-			while (safe)
+			while (trains.Count > 1)
 			{
+				List<int> crashed = new List<int>();
 				trains.Sort();
 
 				foreach (Train train in trains)
@@ -171,16 +172,19 @@ namespace dayX
 					else if (train.facing == Facing.RIGHT) col += 1;
 
 					// Oh noes!  A collision!!!
-					if (locations.Contains((row, col)))
+					if (locations.ContainsKey((row, col)))
 					{
 						collision_x = col;
 						collision_y = row;
-						safe = false;
+						crashes.Add((row, col));
+						crashed.Add(train.number);
+						crashed.Add(locations[(row, col)]);
+						locations.Remove((row, col));
 						break;
 					}
 					else
 					{	
-						locations.Add((row, col));
+						locations.Add((row, col), train.number);
 						train.row = row;
 						train.column = col;
 					}
@@ -207,6 +211,12 @@ namespace dayX
 						else if (train.facing == Facing.RIGHT) train.facing = Facing.DOWN;
 						else if (train.facing == Facing.DOWN) train.facing = Facing.RIGHT;
 					}
+				}
+
+				// Remove the crashed trains
+				foreach (int number in crashes)
+				{
+					trains.Remove(number);
 				}
 
 				//PrintTracks(tracks, trains);
