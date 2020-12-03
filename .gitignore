@@ -1,0 +1,7 @@
+*.swp
+Cargo.lock
+
+2018/*/obj
+2018/*/bin
+
+2020/days/target
