@@ -35,9 +35,9 @@ fn load(filename: &str) -> Vec<Data> {
 	}
 }
 
-fn count_letters(letter: char, s: &str) -> i32 {
+fn count_letters(letter: char, password: &str) -> i32 {
 	let mut count = 0;
-	for c in s.chars() {
+	for c in password.chars() {
 		if c == letter {
 			count += 1;
 		}
@@ -51,7 +51,10 @@ fn calculate(data: &Vec<Data>) -> Option<i32> {
 		let check = count_letters(line.letter, line.password.as_str());
 		if check >= line.min && check <= line.max {
 			count += 1;
-		}
+                        println!("Password '{}' is GOOD.  It has {} letter {}s", line.password, check, line.letter);
+		} else {
+                    println!("Password '{}' is BAD.  It has {} letter {}s", line.password, check, line.letter);
+                }
 	}
 	Some(count)
 }
