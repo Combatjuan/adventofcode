@@ -11,6 +11,11 @@ struct Data {
 	// SOME data
 }
 
+fn calculate(data: &Vec<Data>) -> Result<Answer, &str> {
+	// SOME calculation
+	Err("Implement me")
+}
+
 fn parse_line(line: &String) -> Data {
 	let re = Regex::new(r"SOME regex").unwrap();
 	let cap = re.captures(line).unwrap();
@@ -19,11 +24,6 @@ fn parse_line(line: &String) -> Data {
 			// SOME Data
 	}
 }
-
-fn calculate(data: &Vec<Data>) -> Result<Answer, &str> {
-	// SOME calculation
-}
-
 
 fn load(filename: &str) -> Result<Vec<Data>, String> {
 	if let Ok(file) = fs::File::open(filename) {
