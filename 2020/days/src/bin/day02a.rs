@@ -51,10 +51,7 @@ fn calculate(data: &Vec<Data>) -> Option<i32> {
 		let check = count_letters(line.letter, line.password.as_str());
 		if check >= line.min && check <= line.max {
 			count += 1;
-                        println!("Password '{}' is GOOD.  It has {} letter {}s", line.password, check, line.letter);
-		} else {
-                    println!("Password '{}' is BAD.  It has {} letter {}s", line.password, check, line.letter);
-                }
+		}
 	}
 	Some(count)
 }
