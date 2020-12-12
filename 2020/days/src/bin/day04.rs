@@ -127,7 +127,7 @@ fn calculate(data: &Vec<Data>) -> Result<Answer, &str> {
 	let mut count_a : i64 = 0;
 	let mut count_b : i64 = 0;
 	for license in data {
-		if let Some(license) = is_valid_a(&license) {
+		if let Some(_) = is_valid_a(&license) {
 			count_a += 1;
 		}
 

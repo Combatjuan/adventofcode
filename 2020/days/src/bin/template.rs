@@ -11,17 +11,17 @@ struct Data {
 	// SOME data
 }
 
-fn calculate(data: &Vec<Data>) -> Result<Answer, &str> {
+fn calculate(_data: &Vec<Data>) -> Result<Answer, &str> {
 	// SOME calculation
 	Err("Implement me")
 }
 
 fn parse_line(line: &String) -> Data {
 	let re = Regex::new(r"SOME regex").unwrap();
-	let cap = re.captures(line).unwrap();
-		// SOME parsing
+	let _cap = re.captures(line).unwrap();
+	// SOME parsing
 	Data {
-			// SOME Data
+		// SOME Data
 	}
 }
 

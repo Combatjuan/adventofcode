@@ -12,10 +12,10 @@ struct Data {
 }
 
 fn parse(lines: &mut dyn Iterator<Item=Result<String, std::io::Error>>) -> Option<Data> {
-	let re = Regex::new(r"SOME REGEX").unwrap();
+	let _re = Regex::new(r"SOME REGEX").unwrap();
 	loop {
 		let next_line = lines.next();
-		let line = match next_line {
+		let _line = match next_line {
 			None => { break },
 			Some(Ok(l)) if l.is_empty() => { break },
 			Some(Err(_)) => { break },
@@ -25,7 +25,7 @@ fn parse(lines: &mut dyn Iterator<Item=Result<String, std::io::Error>>) -> Optio
 	Some(Data {})
 }
 
-fn calculate(data: &Vec<Data>) -> Result<Answer, &str> {
+fn calculate(_data: &Vec<Data>) -> Result<Answer, &str> {
 	// SOME calculation
 	Err("Implement me")
 }
