@@ -7,14 +7,6 @@ use regex::Regex;
 // SOME type
 type Answer = i64;
 
-#[derive(Copy, Clone, Debug)]
-enum Direction {
-	North,
-	East,
-	South,
-	West,
-}
-
 #[derive(Debug)]
 enum Action {
 	Nop,
