@@ -19,7 +19,7 @@ struct Data {
 
 fn calculate(data: &Data, up_to: u32) -> Result<Answer, &str> {
 	let mut mem : Vec<Option<u32>> = vec![];
-    mem.resize((up_to + 100) as usize, None);
+	mem.resize((up_to + data.numbers.iter().max().unwrap() + 1) as usize, None);
 	// Load starting values (except the last one because that's really
 	// the first value we need to start crunching on.
 	let stop_at = data.numbers.len() - 1;
@@ -35,7 +35,7 @@ fn calculate(data: &Data, up_to: u32) -> Result<Answer, &str> {
 	loop {
 		// Recall if we've seen the number
 		let next = if let Some(prev_index) = mem[n as usize] {
-            //println!("Found {} last at {} so {} - {} = {}", n, prev_index, prev_index, i, i - prev_index);
+			//println!("Found {} last at {} so {} - {} = {}", n, prev_index, prev_index, i, i - prev_index);
 			i - prev_index
 		} else {
 			0
