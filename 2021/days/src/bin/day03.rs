@@ -28,29 +28,29 @@ fn parse_line(line_number: usize, line: &String) -> Result<Data, String> {
 }
 
 fn most_common_bit_iter<'a, I>(data_iter: I, index: usize, default: bool) -> bool
-    where
-        I: std::iter::ExactSizeIterator<Item = &'a Data>
+	where
+		I: std::iter::ExactSizeIterator<Item = &'a Data>
 {
-    let count = data_iter.len();
-    let true_count : usize = data_iter.filter(|x| x.bits[index]).count();
-    if true_count > (count - true_count) {
-        true
-    } else if true_count < (count - true_count) {
-        false
-    } else {
-        default
-    }
+	let count = data_iter.len();
+	let true_count : usize = data_iter.filter(|x| x.bits[index]).count();
+	if true_count > (count - true_count) {
+		true
+	} else if true_count < (count - true_count) {
+		false
+	} else {
+		default
+	}
 }
 
 fn bool_vec_to_number(v: &Vec<bool>) -> i64 {
-    let mut s = String::new();
-    for b in v {
-        match b {
-            false => s.push('0'),
-            true => s.push('1'),
-        }
-    }
-    i64::from_str_radix(&s, 2).unwrap()
+	let mut s = String::new();
+	for b in v {
+		match b {
+			false => s.push('0'),
+			true => s.push('1'),
+		}
+	}
+	i64::from_str_radix(&s, 2).unwrap()
 }
 
 fn calculate_a(data: &Vec<Data>) -> Result<Answer, String> {
@@ -58,7 +58,7 @@ fn calculate_a(data: &Vec<Data>) -> Result<Answer, String> {
 	let mut gamma = String::new();
 	let mut epsilon = String::new();
 	for i in 0..bit_length {
-        let mcb = most_common_bit_iter(data.iter(), i, true);
+		let mcb = most_common_bit_iter(data.iter(), i, true);
 		if mcb {
 			gamma.push('1');
 			epsilon.push('0');
@@ -66,38 +66,38 @@ fn calculate_a(data: &Vec<Data>) -> Result<Answer, String> {
 			gamma.push('0');
 			epsilon.push('1');
 		}
-    }
+	}
 	let gamma = i64::from_str_radix(&gamma, 2).unwrap(); 
 	let epsilon = i64::from_str_radix(&epsilon, 2).unwrap(); 
 	Ok(gamma * epsilon)
 }
 
 fn calculate_b(data: &Vec<Data>) -> Result<Answer, String> {
-    let length = data[0].bits.len();
+	let length = data[0].bits.len();
 
-    // Calculate Oxygen
-    let mut remaining : Vec<Data> = data.to_vec();
-    for index in 0..length {
-        let bit_to_match = most_common_bit_iter(remaining.iter(), index, true);
-        remaining = remaining.iter().filter(|x| x.bits[index] == bit_to_match).cloned().collect();
-        if remaining.len() == 1 { break }
-    }
-    if remaining.len() != 1 {
-        return Err(format!("Oxygen generator found no solution"));
-    }
-    let oxygen_generator = bool_vec_to_number(&remaining[0].bits);
+	// Calculate Oxygen
+	let mut remaining : Vec<Data> = data.to_vec();
+	for index in 0..length {
+		let bit_to_match = most_common_bit_iter(remaining.iter(), index, true);
+		remaining = remaining.iter().filter(|x| x.bits[index] == bit_to_match).cloned().collect();
+		if remaining.len() == 1 { break }
+	}
+	if remaining.len() != 1 {
+		return Err(format!("Oxygen generator found no solution"));
+	}
+	let oxygen_generator = bool_vec_to_number(&remaining[0].bits);
 
-    let mut remaining : Vec<Data> = data.to_vec();
-    for index in 0..length {
-        let bit_to_match = most_common_bit_iter(remaining.iter(), index, true);
-        remaining = remaining.iter().filter(|x| x.bits[index] != bit_to_match).cloned().collect();
-        if remaining.len() == 1 { break }
-    }
-    if remaining.len() != 1 {
-        return Err(format!("CO2 scrubber found no solution"));
-    }
-    let co2_scrubber = bool_vec_to_number(&remaining[0].bits);
-    Ok(oxygen_generator * co2_scrubber) 
+	let mut remaining : Vec<Data> = data.to_vec();
+	for index in 0..length {
+		let bit_to_match = most_common_bit_iter(remaining.iter(), index, true);
+		remaining = remaining.iter().filter(|x| x.bits[index] != bit_to_match).cloned().collect();
+		if remaining.len() == 1 { break }
+	}
+	if remaining.len() != 1 {
+		return Err(format!("CO2 scrubber found no solution"));
+	}
+	let co2_scrubber = bool_vec_to_number(&remaining[0].bits);
+	Ok(oxygen_generator * co2_scrubber) 
 }
 
 fn calculate(data: &Vec<Data>) -> Result<(Answer, Answer), String> {

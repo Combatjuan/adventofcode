@@ -2,33 +2,31 @@ use std::env;
 use std::fs;
 use std::io::{BufRead, BufReader};
 use std::process::exit;
-use regex::Regex;
 
 // SOME type
-type Answer = i64;
+type Answer = u64;
 
 #[derive(Clone)]
 struct Data {
-	// Some type
+	crabs: Vec<i32>
 }
 
-fn parse_line(line_number: usize, line: &String) -> Result<Data, String> {
-	let re = Regex::new(r"SOME regex").unwrap();
-	if let Some(cap) = re.captures(line) {
-		// SOME PARSING
-		Ok(Data {
-		})
-	} else {
-		Err(format!("Failed to parse line {}: '{}'", line_number, line))
-	} 
+fn str_to_numbers(s: &String) -> Vec<i32> {
+	s.split(",").map(|x| x.parse::<i32>().unwrap()).collect()
 }
 
-fn calculate_a(data: &Vec<Data>) -> Result<Answer, String> {
-	Err(format!("Implement me"))
+fn parse_line(line: &String) -> Result<Data, String> {
+	Ok(Data {
+		crabs: str_to_numbers(line)
+	})
 }
 
-fn calculate_b(data: &Vec<Data>) -> Result<Answer, String> {
-	Err(format!("Implement me"))
+fn calculate_a(data: &Data) -> Result<Answer, String> {
+	Err("Implement me".to_string())
+}
+
+fn calculate_b(data: &Data) -> Result<Answer, String> {
+	Err("Implement me".to_string())
 }
 
 fn calculate(data: &Data) -> (Result<Answer, String>, Result<Answer, String>) {
@@ -43,20 +41,11 @@ fn calculate(data: &Data) -> (Result<Answer, String>, Result<Answer, String>) {
 	}
 }
 
-fn load(filename: &str) -> Result<Vec<Data>, String> {
+fn load(filename: &str) -> Result<Data, String> {
 	if let Ok(file) = fs::File::open(filename) {
-		let lines = BufReader::new(file).lines();
-		let data : Vec<Data> = lines.enumerate().map(
-				|(n, x)|
-				match parse_line(n + 1, &x.unwrap()) {
-					Ok(data) => data,
-					Err(msg) => panic!("{}", msg)
-				}
-			).collect();
-		match data.is_empty() {
-			true => Err(format!("Failed to parse every line in {}", filename)),
-			false => Ok(data),
-		}
+		let mut lines = BufReader::new(file).lines();
+		let line = lines.next().unwrap().unwrap();
+		parse_line(&line)
 	} else {
 		Err(format!("Could not load data from '{}'.", filename))
 	}
