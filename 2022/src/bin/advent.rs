@@ -12,6 +12,7 @@ pub struct LineParser<Record> {
 }
 
 impl<Record> LineParser<Record> {
+	#[allow(dead_code)]
 	pub fn new(f: &'static dyn Fn(usize, &String) -> Result<Record, String>) -> LineParser<Record> {
 		LineParser {
 			line_parser: Box::new(f)
@@ -32,6 +33,39 @@ impl<Record> Parser<Record> for LineParser<Record> {
 		match records.is_empty() {
 			true => Err(format!("Failed to parse every line in file.")),
 			false => Ok(records),
+		}
+	}
+}
+
+/// StringVecParser
+/// This class just converts our input file into a vector of strings which
+/// means we don't need to have BufReaders and Files imported into every
+/// day's solution.
+pub struct StringVecParser<Record> {
+	parser: Box<dyn Fn(Vec<String>) -> Result<Vec<Record>, String>>
+}
+
+impl<Record> StringVecParser<Record> {
+	#[allow(dead_code)]
+	pub fn new(f: &'static dyn Fn(Vec<String>) -> Result<Vec<Record>, String>) -> StringVecParser<Record> {
+		StringVecParser {
+			parser: Box::new(f)
+		}
+	}
+}
+
+impl<Record> Parser<Record> for StringVecParser<Record> {
+	fn parse(&mut self, file: File) -> Result<Vec<Record>, String> {
+		let lines = BufReader::new(file).lines().map(|x| x.unwrap()).collect();
+		let records = (self.parser)(lines);
+		match records {
+			Ok(records) => {
+				match records.is_empty() {
+					true => Err(format!("Failed to parse every line in file.")),
+					false => Ok(records),
+				}
+			},
+			Err(msg) => Err(msg)
 		}
 	}
 }
@@ -74,6 +108,11 @@ impl Solution {
 	}
 }
  
+#[allow(dead_code)]
+fn main() {
+	println!("Please use --bin to specify the correct day to run.");
+}
+
 /*
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
