@@ -1,8 +1,7 @@
 mod advent;
 
-use std::process::exit;
 use regex::Regex;
-use advent::{Calculator, StringVecParser, Solution};
+use advent::{Calculator, StringVecParser, Solution, advent_exit};
 
 struct Record {
 	inventory: Vec<i64>,
@@ -10,7 +9,7 @@ struct Record {
 
 struct CalorieCalculator {}
 impl Calculator<Record, i64> for CalorieCalculator {
-	fn solve(&mut self, records: &Vec<Record>) -> Result<i64, String> {
+	fn solve_a(&mut self, records: &Vec<Record>) -> Result<i64, String> {
 		let mut max : i64 = 0;
 		for record in records {
 			let mut inventory_total : i64 = 0;
@@ -22,6 +21,24 @@ impl Calculator<Record, i64> for CalorieCalculator {
 			}
 		}
 		Ok(max)
+	}
+	fn solve_b(&mut self, records: &Vec<Record>) -> Result<i64, String> {
+		let mut totals = vec![];
+		for record in records {
+			let mut inventory_total : i64 = 0;
+			for c in &record.inventory {
+				inventory_total += c;
+			}
+			totals.push(inventory_total);
+		}
+
+		totals.sort();
+		if totals.len() < 3 {
+			return Err("There were not at least 3 backpacks full.".to_string());
+		} else {
+			let l = totals.len();
+			Ok(totals[l - 1] + totals[l -2] + totals[l - 3])
+		}
 	}
 }
 
@@ -53,15 +70,6 @@ fn static_parser(lines: Vec<String>) -> Result<Vec<Record>, String> {
 fn main() {
 	let mut parser = StringVecParser::new(&static_parser);
 	let mut calculator = CalorieCalculator {};
-	exit(match Solution::solve::<Record, i64>(&mut parser, &mut calculator) {
-		Ok(answer) => {
-			println!("Answer: {}", answer);
-			0
-		},
-		Err(err) => {
-			println!("{}", err);
-			1
-		}
-	});
+	let status = Solution::solve::<Record, i64>(&mut parser, &mut calculator);
+	advent_exit(status);
 }
-

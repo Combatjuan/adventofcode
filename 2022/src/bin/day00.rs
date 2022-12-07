@@ -1,17 +1,19 @@
 mod advent;
 
-use std::process::exit;
 use regex::Regex;
-use advent::{Calculator, LineParser, Solution};
+use advent::{advent_exit, Calculator, LineParser, Solution};
 
 struct SumCalculator {}
 impl Calculator<i64, i64> for SumCalculator {
-	fn solve(&mut self, records: &Vec<i64>) -> Result<i64, String> {
+	fn solve_a(&mut self, records: &Vec<i64>) -> Result<i64, String> {
 		let mut n : i64 = 0;
 		for r in records {
 			n += r;
 		}
 		Ok(n)
+	}
+	fn solve_b(&mut self, _records: &Vec<i64>) -> Result<i64, String> {
+		Err("Unimplemented".to_string())
 	}
 }
 
@@ -28,14 +30,6 @@ fn static_parse_line(line_number: usize, s: &String) -> Result<i64, String> {
 fn main() {
 	let mut parser = LineParser::new(&static_parse_line);
 	let mut calculator = SumCalculator {};
-	exit(match Solution::solve::<i64, i64>(&mut parser, &mut calculator) {
-		Ok(answer) => {
-			println!("Answer: {}", answer);
-			0
-		},
-		Err(err) => {
-			println!("{}", err);
-			1
-		}
-	});
+	let status = Solution::solve::<i64, i64>(&mut parser, &mut calculator);
+	advent_exit(status);
 }

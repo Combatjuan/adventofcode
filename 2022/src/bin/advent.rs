@@ -2,6 +2,30 @@ use std::env;
 use std::fmt::Display;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::process::exit;
+
+pub struct Status {
+	status: Result<(), String>,
+	answer_a: Result<String, String>,
+	answer_b: Result<String, String>,
+}
+
+impl Status {
+	fn from_err(err: String) -> Status {
+		Status {
+			status: Err(err),
+			answer_a: Ok("".to_string()),
+			answer_b: Ok("".to_string()),
+		}
+	}
+	fn from_a_b(answer_a: Result<String, String>, answer_b: Result<String, String>) -> Status {
+		Status {
+			status: Ok(()),
+			answer_a,
+			answer_b,
+		}
+	}
+}
 
 pub trait Parser<Record> {
 	fn parse(&mut self, file: File) -> Result<Vec<Record>, String>;
@@ -71,17 +95,28 @@ impl<Record> Parser<Record> for StringVecParser<Record> {
 }
 
 pub trait Calculator<Record, Answer> {
-	fn solve(&mut self, records: &Vec<Record>) -> Result<Answer, String>;
+	fn solve_a(&mut self, records: &Vec<Record>) -> Result<Answer, String>;
+	fn solve_b(&mut self, records: &Vec<Record>) -> Result<Answer, String>;
 }
+
+/*
+impl<Record, Answer> dyn Calculator<Record, Answer> {
+	fn solve_a(&mut self, records: &Vec<Record>) -> Result<Answer, String> {
+		Err("Unimplemented".to_string())
+	}
+	fn solve_b(&mut self, records: &Vec<Record>) -> Result<Answer, String> {
+		Err("Unimplemented".to_string())
+	}
+}
+*/
 
 pub struct Solution {}
 
-//impl Solution<Parser<Record>, Calculator<Record, Answer>> {
 impl Solution {
 	pub fn solve<Record, Answer>(
 			parser: &mut dyn Parser<Record>,
 			calculator: &mut dyn Calculator<Record, Answer>
-	) -> Result<String, String>
+	) -> Status
 	where Answer: Display 
 	{
 		let args: Vec<String> = env::args().collect();
@@ -91,65 +126,59 @@ impl Solution {
 				let records = parser.parse(file);
 				match records {
 					Ok(records) => {
-						let answer = calculator.solve(&records);
-						match answer {
-							Ok(a) => Ok(format!("{}", a)),
-							Err(msg) => Err(format!("Could not find a solution: {} ", msg))
-						}
+						let answer_a = calculator.solve_a(&records);
+						let display_a = match answer_a {
+							Ok(a) => Ok(format!("Part A Answer: {}", a)),
+							Err(msg) => Err(format!("Part B Failed: {} ", msg))
+						};
+						let answer_b = calculator.solve_b(&records);
+						let display_b = match answer_b {
+							Ok(a) => Ok(format!("Part B Answer: {}", a)),
+							Err(msg) => Err(format!("Part B Failed: {} ", msg))
+						};
+						Status::from_a_b(display_a, display_b)
 					},
-					Err(msg) => Err(format!("Could not parse file: {} ", msg))
+					Err(msg) => Status::from_err(format!("Parsing: Could not parse file: '{}' {}", filename, msg))
 				}
 			} else {
-				Err(String::from("Provide a file name please."))
+				Status::from_err(format!("File: Failed to open file '{}'", filename))
 			}
 		} else {
-			Err(format!("Incorrect arguments specified"))
+			Status::from_err(format!("Usage: Incorrect arguments specified"))
 		}
 	}
 }
  
+pub fn advent_exit(status: Status) {
+	exit(match status {
+		Status { status: Err(e), answer_a: _, answer_b: _ } => {
+			println!("Error: {}", e);
+			1
+		},
+		Status { status: _, answer_a: Ok(a), answer_b: Ok(b) } => {
+			println!("{}", a);
+			println!("{}", b);
+			0
+		},
+		Status { status: _, answer_a: Ok(a), answer_b: Err(e) } => {
+			println!("{}", a);
+			println!("{}", e);
+			2
+		},
+		Status { status: _, answer_a: Err(e), answer_b: Ok(b) } => {
+			println!("{}", e);
+			println!("{}", b);
+			3
+		},
+		Status { status: _, answer_a: Err(a), answer_b: Err(b) } => {
+			println!("{}", a);
+			println!("{}", b);
+			4
+		},
+	});
+}
+
 #[allow(dead_code)]
 fn main() {
 	println!("Please use --bin to specify the correct day to run.");
 }
-
-/*
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-struct SumCalculator {}
-impl Calculator<i64, i64> for SumCalculator {
-	fn solve(&mut self, records: &Vec<i64>) -> Result<i64, String> {
-		let mut n : i64 = 0;
-		for r in records {
-			n += r;
-		}
-		Ok(n)
-	}
-}
-
-fn static_parse_line(line_number: usize, s: &String) -> Result<i64, String> {
-	let re = Regex::new(r"\d+").unwrap();
-	if let Some(cap) = re.captures(s) {
-		let number : i64 = cap.get(0).unwrap().as_str().parse::<i64>().unwrap();
-		Ok(number)
-	} else {
-		Err(format!("Failed to parse line {}: '{}'", line_number, s))
-	} 
-}
-
-fn main() {
-	let mut parser = LineParser {line_parser: Box::new(static_parse_line)};
-	let mut calculator = SumCalculator {};
-	exit(match Solution::solve::<i64, i64>(&mut parser, &mut calculator) {
-		Ok(answer) => {
-			println!("Answer: {}", answer);
-			0
-		},
-		Err(err) => {
-			println!("{}", err);
-			1
-		}
-	});
-}
-*/
