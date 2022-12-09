@@ -129,7 +129,7 @@ impl Solution {
 						let answer_a = calculator.solve_a(&records);
 						let display_a = match answer_a {
 							Ok(a) => Ok(format!("Part A Answer: {}", a)),
-							Err(msg) => Err(format!("Part B Failed: {} ", msg))
+							Err(msg) => Err(format!("Part A Failed: {} ", msg))
 						};
 						let answer_b = calculator.solve_b(&records);
 						let display_b = match answer_b {
