@@ -26,7 +26,7 @@ impl Parser<Record> for SingleLineParser {
     }
 }
 
-fn four_the_same(signals: &Vec<Record>, i: usize) -> bool {
+fn four_are_unique(signals: &Vec<Record>, i: usize) -> bool {
     if i > signals.len() - 4 {
         false
     } else {
@@ -52,7 +52,7 @@ struct SumCalculator {}
 impl Calculator<Record, Answer> for SumCalculator {
 	fn solve_a(&mut self, records: &Vec<Record>) -> Result<Answer, String> {
         for i in 0..records.len() {
-            if four_the_same(&records, i) {
+            if four_are_unique(&records, i) {
                 return Ok(i as i64 + 4)
             }
         }
